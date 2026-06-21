@@ -1,0 +1,281 @@
+/* CSS Variables for Injected Sidebar */
+#twitch-chat-sidebar-root {
+  --sidebar-bg: #0f0e13;
+  --sidebar-header-bg: #18171f;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-color: #f5f5f7;
+  --text-muted: #9a98a6;
+  --twitch-purple: #9146ff;
+  --twitch-glow: rgba(145, 70, 255, 0.4);
+}
+
+/* Sidebar Root Container */
+#twitch-chat-sidebar-root {
+  position: sticky !important;
+  top: 56px !important;
+  height: calc(100vh - 56px) !important;
+  width: var(--twitch-chat-width, 340px) !important;
+  min-width: 280px !important;
+  max-width: 600px !important;
+  background-color: var(--sidebar-bg) !important;
+  border-left: 1px solid var(--border-color) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  z-index: 1000 !important;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.1s ease !important;
+  flex-shrink: 0 !important;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+#twitch-chat-sidebar-root.collapsed {
+  display: none !important;
+}
+
+/* Resize Handle */
+.twitch-chat-resize-handle {
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 1002;
+  transition: background-color 0.2s;
+}
+
+.twitch-chat-resize-handle:hover,
+.twitch-chat-resize-handle.resizing {
+  background-color: var(--twitch-purple);
+  box-shadow: 0 0 8px var(--twitch-glow);
+}
+
+/* Sidebar Header */
+.twitch-chat-sidebar-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 48px !important;
+  padding: 0 12px !important;
+  background-color: var(--sidebar-header-bg) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  user-select: none !important;
+}
+
+.twitch-chat-sidebar-title-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--text-color) !important;
+}
+
+.twitch-chat-status-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.twitch-chat-sidebar-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* Action Buttons */
+.twitch-chat-action-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border: none !important;
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.twitch-chat-action-btn:hover {
+  color: var(--text-color) !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.twitch-chat-action-btn:active {
+  transform: scale(0.9) !important;
+}
+
+.twitch-chat-action-btn.close-btn:hover {
+  color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Chat Iframe Wrapper */
+.twitch-chat-iframe-container {
+  flex-grow: 1 !important;
+  position: relative !important;
+  width: 100% !important;
+  height: calc(100% - 48px) !important;
+  background-color: var(--sidebar-bg) !important;
+}
+
+.twitch-chat-sidebar-iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+}
+
+/* Floating Toggle Tab */
+#twitch-chat-toggle-btn {
+  position: fixed !important;
+  right: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 48px !important;
+  background: var(--sidebar-header-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-right: none !important;
+  border-radius: 8px 0 0 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--twitch-purple) !important;
+  z-index: 9999 !important;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+#twitch-chat-toggle-btn:hover {
+  width: 38px !important;
+  color: var(--text-color) !important;
+  background-color: var(--twitch-purple) !important;
+  box-shadow: -2px 0 12px var(--twitch-glow) !important;
+}
+
+#twitch-chat-toggle-btn svg {
+  width: 16px !important;
+  height: 16px !important;
+  transition: transform 0.3s ease !important;
+}
+
+#twitch-chat-toggle-btn.active svg {
+  transform: rotate(180deg) !important;
+}
+
+/* Custom loading spinner inside iframe container */
+.twitch-chat-spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: var(--sidebar-bg);
+  z-index: 1001;
+  color: var(--text-muted);
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+}
+
+.twitch-chat-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(145, 70, 255, 0.1);
+  border-left-color: var(--twitch-purple);
+  border-radius: 50%;
+  animation: twitchSpin 1s linear infinite;
+}
+
+@keyframes twitchSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   YouTube Live Chat Replacement Mode Styles
+   ========================================== */
+
+/* Hide native chat elements when Twitch is active */
+/* Style for Twitch iframe replacing YouTube Chat */
+.twitch-chat-replaced-iframe {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 99999 !important; /* Forces it on top of the native YouTube chat's Shadow DOM content! */
+  border: none !important;
+  display: block !important;
+  background-color: #0f0e13 !important;
+  border-radius: 12px !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure the parent chat container behaves properly with our iframe */
+ytd-live-chat-frame.twitch-active,
+#chat.twitch-active {
+  background-color: #0f0e13 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+/* Action Bar Toggle Button (below the video player) */
+#twitch-chat-action-toggle-btn {
+  margin-left: 8px !important;
+  border-radius: 18px !important;
+  font-family: Roboto, Arial, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: background-color 0.2s, transform 0.1s !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  vertical-align: middle !important;
+}
+
+#twitch-chat-action-toggle-btn.twitch-active {
+  background-color: var(--twitch-purple) !important;
+  color: #ffffff !important;
+}
+
+#twitch-chat-action-toggle-btn.twitch-active:hover {
+  background-color: #a366ff !important;
+}
+
+#twitch-chat-action-toggle-btn.youtube-active {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f5f5f7 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+#twitch-chat-action-toggle-btn.youtube-active:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+#twitch-chat-action-toggle-btn:active {
+  transform: scale(0.95) !important;
+}
+
+#twitch-chat-action-toggle-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+  fill: currentColor !important;
+}
+
+
+

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leopard Chat Integrator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="logo-container">
+        <img src="icons/icon48.png" alt="Logo" class="logo">
+      </div>
+      <div class="title-container">
+        <h1>Leopard Chat</h1>
+        <p class="subtitle">Twitch Chat & YouTube Companion</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <h2>Channels Configuration</h2>
+      <div class="input-group">
+        <label for="twitchChannel">Twitch Channel</label>
+        <div class="input-wrapper">
+          <span class="prefix">twitch.tv/</span>
+          <input type="text" id="twitchChannel" placeholder="leopard" value="leopard">
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="youtubeChannel">YouTube Handle</label>
+        <div class="input-wrapper">
+          <span class="prefix">youtube.com/</span>
+          <input type="text" id="youtubeChannel" placeholder="@leopardstealth" value="@leopardstealth">
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Display Mode</h2>
+      <div class="mode-selector">
+        <label class="mode-card" for="modeSidebar">
+          <input type="radio" name="displayMode" id="modeSidebar" value="sidebar" checked>
+          <div class="mode-card-content">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="15" y1="3" x2="15" y2="21" />
+            </svg>
+            <span>Sidebar</span>
+          </div>
+        </label>
+
+        <label class="mode-card" for="modeSidePanel">
+          <input type="radio" name="displayMode" id="modeSidePanel" value="sidepanel">
+          <div class="mode-card-content">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="9" y1="3" x2="9" y2="21" />
+            </svg>
+            <span>Side Panel</span>
+          </div>
+        </label>
+
+        <label class="mode-card" for="modeWindow">
+          <input type="radio" name="displayMode" id="modeWindow" value="window">
+          <div class="mode-card-content">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path d="M9 17h6M9 13h6M9 9h3" />
+            </svg>
+            <span>Popup Window</span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="section" id="sidebarWidthSection">
+      <div class="range-header">
+        <label for="sidebarWidth">Sidebar Width</label>
+        <span id="widthValue">340px</span>
+      </div>
+      <input type="range" id="sidebarWidth" min="280" max="600" step="10" value="340">
+    </div>
+
+    <div class="section">
+      <h2>Chat Styling</h2>
+      <div class="input-group">
+        <label for="chatFontFamily">Chat Font Family (Local PC Font)</label>
+        <div class="input-wrapper">
+          <input type="text" id="chatFontFamily" placeholder="Agave" value="Agave">
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="chatFontSize">Chat Font Size</label>
+        <div class="input-wrapper">
+          <input type="text" id="chatFontSize" placeholder="16pt" value="16pt">
+        </div>
+      </div>
+    </div>
+
+    <div class="section toggle-section" id="replaceToggleSection">
+      <div class="toggle-info">
+        <h3>Replace YouTube Chat</h3>
+        <p>Swap YouTube live chat feed with Twitch chat</p>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="replaceWithTwitch" checked>
+        <span class="slider round"></span>
+      </label>
+    </div>
+
+    <div class="section toggle-section">
+      <div class="toggle-info">
+        <h3>Auto-Open Chat</h3>
+        <p>Automatically launch chat when watching the channel</p>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="autoOpen" checked>
+        <span class="slider round"></span>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="openNowBtn" class="btn btn-primary">
+        <span>Launch Chat Now</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="footer">
+      <p>Status: <span id="statusText" class="status-active">Active</span></p>
+      <p id="saveNotice" class="save-notice">Settings saved automatically</p>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
