@@ -8,7 +8,7 @@ A premium Manifest V3 Google Chrome extension designed for viewers of the conten
 
 - **YouTube Chat Replacement**: When Twitch Chat is active, the extension automatically hides YouTube's native live chat feed and embeds the Twitch chat iframe in its place.
 - **Theater Mode Compatibility**: Since the Twitch chat resides inside YouTube's official chat container, it behaves perfectly in **Theater Mode**, remaining docked on the right side of the video player without falling below it.
-- **Action Bar Toggle Button**: Adds a native-looking toggle button in the action row below the YouTube video player (next to Like/Share).
+- **Live Chat Placeholder Toggle Button**: Adds a native-looking toggle button directly next to YouTube's "Open panel" button in the Live Chat placeholder section under the video player. (Falls back to the Like/Share action row below the video if the placeholder isn't visible).
   - If showing Twitch, it appears as a purple **Twitch Chat** pill button. Clicking it swaps the panel back to the native YouTube chat.
   - If showing YouTube, it appears as a neutral outlined **YouTube Chat** pill button. Clicking it swaps the panel to the Twitch chat.
 - **Multi-Mode Integration**: Configurable via the settings popup:
