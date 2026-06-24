@@ -108,19 +108,8 @@ function init() {
         runDetection();
       }
 
-      // Check if action bar button is missing and re-inject it if needed
-      const actionsMenu = document.querySelector(
-        'ytd-watch-metadata #actions-inner ytd-menu-renderer, ' +
-        'ytd-watch-metadata #actions ytd-menu-renderer, ' +
-        'ytd-menu-renderer.ytd-watch-metadata, ' +
-        '#top-level-buttons-computed'
-      );
-      if (actionsMenu) {
-        const actionBtn = document.querySelector('#twitch-chat-action-toggle-btn');
-        if (!actionBtn) {
-          ensureActionBtn(actionsMenu);
-        }
-      }
+      // Update button position and titles
+      updateOnPageControls();
     }
   }, 1500);
 
@@ -199,16 +188,8 @@ function checkIfTargetPage() {
 
 // Injects the Twitch sidebar (either replacing native YouTube chat or using custom fallback sidebar)
 function createSidebar(forceShow = false) {
-  // Inject/Update the Toggle Button below the video player if action menu exists
-  const actionsMenu = document.querySelector(
-    'ytd-watch-metadata #actions-inner ytd-menu-renderer, ' +
-    'ytd-watch-metadata #actions ytd-menu-renderer, ' +
-    'ytd-menu-renderer.ytd-watch-metadata, ' +
-    '#top-level-buttons-computed'
-  );
-  if (actionsMenu) {
-    ensureActionBtn(actionsMenu);
-  }
+  // Inject/Update the Toggle Button and Title next to the Live Chat placeholder (or action menu)
+  updateOnPageControls();
 
   // Try to find native YouTube live chat element
   const nativeChat = document.querySelector('ytd-live-chat-frame#chat, #chat');
@@ -220,25 +201,9 @@ function createSidebar(forceShow = false) {
     removeFallbackSidebar();
 
     if (settings.replaceWithTwitch) {
-      // Add active class to native chat container
+      // Add active class to native chat container so our absolute CSS styles apply
       if (!nativeChat.classList.contains('twitch-active')) {
         nativeChat.classList.add('twitch-active');
-      }
-
-      // Safe Shadow-DOM Piercing: Hide native elements via inline styles
-      // This is safe because we do not add/remove elements inside the shadow root,
-      // avoiding any conflicts with YouTube's Polymer framework.
-      const shadow = nativeChat.shadowRoot;
-      if (shadow) {
-        const nativeIframe = shadow.querySelector('#chat-frame');
-        const nativeHeader = shadow.querySelector('#header');
-        const subframe = shadow.querySelector('#subframe');
-        const spinner = shadow.querySelector('#spinner, paper-spinner, yt-spinner');
-        
-        if (nativeIframe) nativeIframe.style.setProperty('display', 'none', 'important');
-        if (nativeHeader) nativeHeader.style.setProperty('display', 'none', 'important');
-        if (subframe) subframe.style.setProperty('display', 'none', 'important');
-        if (spinner) spinner.style.setProperty('display', 'none', 'important');
       }
 
       // Check if we already injected our iframe inside the light DOM
@@ -257,10 +222,11 @@ function createSidebar(forceShow = false) {
         }
       }
     } else {
-      // They toggled to show the YouTube Chat - restore original display settings
+      // They toggled to show the YouTube Chat - remove replacement class and iframe
       removeReplacedChatOnly(nativeChat);
     }
     
+    // We are in replacement mode; hide our custom fallback toggle tab
     ensureToggleBtn(false);
   } else {
     // 2. Fallback Sidebar Mode (standard videos or channel pages where live chat doesn't exist)
@@ -358,8 +324,46 @@ function createSidebar(forceShow = false) {
   }
 }
 
-// Injects the quick toggle button below the video inside YouTube's action buttons menu
-function ensureActionBtn(actionsMenu) {
+// Manages position of toggle button and chat placeholder titles
+function updateOnPageControls() {
+  if (!isMatched) return;
+
+  // 1. Update the "Live chat" title to "Live chat / Twitch chat"
+  const chatTitle = document.querySelector('h2.ytCarouselTitleViewModelTitle, .ytCarouselTitleViewModelTitle');
+  if (chatTitle && chatTitle.textContent.trim() === 'Live chat') {
+    chatTitle.textContent = 'Live chat / Twitch chat';
+  }
+
+  // 2. Find the "Open panel" button container next to the Live Chat placeholder under the video
+  const openPanelBtnHost = document.querySelector('.ytTextCarouselItemViewModelButton, button-view-model.ytTextCarouselItemViewModelButton');
+  if (openPanelBtnHost) {
+    ensureActionBtn(openPanelBtnHost, true);
+    return;
+  }
+
+  // Fallback: If not found, try the standard actions menu (Like/Share row) below the video
+  const actionsMenu = document.querySelector(
+    'ytd-watch-metadata #actions-inner ytd-menu-renderer, ' +
+    'ytd-watch-metadata #actions ytd-menu-renderer, ' +
+    'ytd-menu-renderer.ytd-watch-metadata, ' +
+    '#top-level-buttons-computed'
+  );
+  if (actionsMenu) {
+    ensureActionBtn(actionsMenu, false);
+  }
+}
+
+// Restores original page layouts when leaving matched channel
+function restoreOnPageControls() {
+  removeActionBtn();
+  const chatTitle = document.querySelector('h2.ytCarouselTitleViewModelTitle, .ytCarouselTitleViewModelTitle');
+  if (chatTitle && chatTitle.textContent === 'Live chat / Twitch chat') {
+    chatTitle.textContent = 'Live chat';
+  }
+}
+
+// Injects the quick toggle button inside YouTube's DOM next to the open panel button or actions row
+function ensureActionBtn(targetContainer, isNextTo) {
   let btn = document.querySelector('#twitch-chat-action-toggle-btn');
   if (!btn) {
     btn = document.createElement('button');
@@ -369,8 +373,17 @@ function ensureActionBtn(actionsMenu) {
       const nextReplaceState = !settings.replaceWithTwitch;
       chrome.storage.sync.set({ replaceWithTwitch: nextReplaceState });
     });
-    
-    actionsMenu.appendChild(btn);
+  }
+
+  // Position it correctly in the DOM
+  if (isNextTo) {
+    if (targetContainer.nextSibling !== btn) {
+      targetContainer.after(btn);
+    }
+  } else {
+    if (btn.parentNode !== targetContainer) {
+      targetContainer.appendChild(btn);
+    }
   }
 
   if (settings.replaceWithTwitch) {
@@ -452,21 +465,6 @@ function removeFallbackSidebar() {
 
 function removeReplacedChatOnly(chatContainer) {
   chatContainer.classList.remove('twitch-active');
-  
-  // Safely restore YouTube native elements inline displays
-  const shadow = chatContainer.shadowRoot;
-  if (shadow) {
-    const nativeIframe = shadow.querySelector('#chat-frame');
-    const nativeHeader = shadow.querySelector('#header');
-    const subframe = shadow.querySelector('#subframe');
-    const spinner = shadow.querySelector('#spinner, paper-spinner, yt-spinner');
-    
-    if (nativeIframe) nativeIframe.style.display = '';
-    if (nativeHeader) nativeHeader.style.display = '';
-    if (subframe) subframe.style.display = '';
-    if (spinner) spinner.style.display = '';
-  }
-
   const replacedIframe = chatContainer.querySelector('.twitch-chat-replaced-iframe');
   if (replacedIframe) {
     replacedIframe.remove();
@@ -478,7 +476,7 @@ function removeReplacedChat() {
   nativeChats.forEach(chat => {
     removeReplacedChatOnly(chat);
   });
-  removeActionBtn();
+  restoreOnPageControls();
 }
 
 function removeSidebar() {
@@ -487,6 +485,7 @@ function removeSidebar() {
   manuallyClosed = false;
 }
 
+// Reloads Twitch iframe inside sidebar
 function reloadIframe() {
   if (!sidebarRoot) return;
   const iframe = sidebarRoot.querySelector('.twitch-chat-sidebar-iframe');
