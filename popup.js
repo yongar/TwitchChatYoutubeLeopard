@@ -115,7 +115,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   widthSlider.addEventListener('input', (e) => {
-    widthValue.textContent = `${e.target.value}px`;
+    const val = parseInt(e.target.value, 10);
+    widthValue.textContent = `${val}px`;
+    chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
+      tabs.forEach(tab => {
+        chrome.tabs.sendMessage(tab.id, { 
+          action: 'updateWidthRealtime', 
+          width: val 
+        }).catch(() => {});
+      });
+    });
   });
   widthSlider.addEventListener('change', saveSettings);
 

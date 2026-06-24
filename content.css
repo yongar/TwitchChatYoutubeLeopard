@@ -227,6 +227,20 @@ ytd-live-chat-frame.twitch-active,
   background-color: #0f0e13 !important;
   border-radius: 12px !important;
   overflow: hidden !important;
+  width: var(--twitch-chat-width, 340px) !important;
+  max-width: var(--twitch-chat-width, 340px) !important;
+  min-width: var(--twitch-chat-width, 340px) !important;
+}
+
+/* Update watch-flexy layout variables dynamically when Twitch chat is active */
+ytd-watch-flexy.twitch-active {
+  --ytd-watch-flexy-sidebar-width: var(--twitch-chat-width, 340px) !important;
+  --ytd-watch-flexy-sidebar-min-width: var(--twitch-chat-width, 340px) !important;
+}
+
+ytd-watch-flexy.twitch-active #secondary.ytd-watch-flexy {
+  width: var(--twitch-chat-width, 340px) !important;
+  min-width: var(--twitch-chat-width, 340px) !important;
 }
 
 /* Action Bar Toggle Button (below the video player) */

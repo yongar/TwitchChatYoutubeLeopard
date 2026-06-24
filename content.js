@@ -39,6 +39,18 @@ chrome.storage.onChanged.addListener((changes, area) => {
         sidebarRoot.style.setProperty('--twitch-chat-width', `${settings.sidebarWidth}px`);
       }
 
+      // Update width immediately if replaced native chat exists
+      if (settings.sidebarWidth !== oldWidth) {
+        const replacedChat = document.querySelector('ytd-live-chat-frame#chat.twitch-active, #chat.twitch-active');
+        if (replacedChat) {
+          replacedChat.style.setProperty('--twitch-chat-width', `${settings.sidebarWidth}px`);
+        }
+        const watchFlexy = document.querySelector('ytd-watch-flexy.twitch-active');
+        if (watchFlexy) {
+          watchFlexy.style.setProperty('--twitch-chat-width', `${settings.sidebarWidth}px`);
+        }
+      }
+
       // If channel changed, reload iframe
       if (settings.twitchChannel !== oldChannel) {
         // 1. Fallback sidebar
@@ -82,6 +94,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       settings.twitchChannel = message.twitchChannel;
     }
     createSidebar(true);
+  } else if (message.action === 'updateWidthRealtime') {
+    const newWidth = message.width;
+    settings.sidebarWidth = newWidth;
+    
+    if (sidebarRoot) {
+      sidebarRoot.style.setProperty('--twitch-chat-width', `${newWidth}px`);
+    }
+    
+    const replacedChat = document.querySelector('ytd-live-chat-frame#chat.twitch-active, #chat.twitch-active');
+    if (replacedChat) {
+      replacedChat.style.setProperty('--twitch-chat-width', `${newWidth}px`);
+    }
+    
+    const watchFlexy = document.querySelector('ytd-watch-flexy.twitch-active');
+    if (watchFlexy) {
+      watchFlexy.style.setProperty('--twitch-chat-width', `${newWidth}px`);
+    }
   }
 });
 
@@ -204,6 +233,16 @@ function createSidebar(forceShow = false) {
       // Add active class to native chat container so our absolute CSS styles apply
       if (!nativeChat.classList.contains('twitch-active')) {
         nativeChat.classList.add('twitch-active');
+      }
+      nativeChat.style.setProperty('--twitch-chat-width', `${settings.sidebarWidth}px`);
+
+      // Add active class and width property to watch-flexy layout container
+      const watchFlexy = document.querySelector('ytd-watch-flexy');
+      if (watchFlexy) {
+        if (!watchFlexy.classList.contains('twitch-active')) {
+          watchFlexy.classList.add('twitch-active');
+        }
+        watchFlexy.style.setProperty('--twitch-chat-width', `${settings.sidebarWidth}px`);
       }
 
       // Check if we already injected our iframe inside the light DOM
@@ -465,9 +504,16 @@ function removeFallbackSidebar() {
 
 function removeReplacedChatOnly(chatContainer) {
   chatContainer.classList.remove('twitch-active');
+  chatContainer.style.removeProperty('--twitch-chat-width');
   const replacedIframe = chatContainer.querySelector('.twitch-chat-replaced-iframe');
   if (replacedIframe) {
     replacedIframe.remove();
+  }
+  
+  const watchFlexy = document.querySelector('ytd-watch-flexy');
+  if (watchFlexy) {
+    watchFlexy.classList.remove('twitch-active');
+    watchFlexy.style.removeProperty('--twitch-chat-width');
   }
 }
 
