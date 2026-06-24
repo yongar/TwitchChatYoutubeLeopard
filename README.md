@@ -15,7 +15,7 @@ A premium Manifest V3 Google Chrome extension designed for viewers of the conten
   1. **Injected Sidebar (Recommended)**: Seamlessly replaces the YouTube live chat feed.
   2. **Chrome Side Panel**: Slides open the native Chrome side panel to load Twitch chat.
   3. **Standalone Window**: Opens a borderless companion popup window on the right side of the screen.
-- **Dynamic Styling**: A customized content injector applies custom styles inside the Twitch chat frames. Set your preferred local PC fonts (e.g., `Agave`) and size (e.g., `16pt`) dynamically!
+- **Dynamic Styling**: A customized content injector applies custom styles inside the Twitch chat frames. Set your preferred local PC fonts (e.g., `Agave`) and size (e.g., `21px` slider) dynamically!
 - **Auto-Open**: Toggle whether the extension launches the chat automatically when matching the target stream.
 
 ---

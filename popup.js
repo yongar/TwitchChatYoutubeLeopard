@@ -8,20 +8,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const widthSection = document.getElementById('sidebarWidthSection');
   const chatFontInput = document.getElementById('chatFontFamily');
   const chatFontSizeInput = document.getElementById('chatFontSize');
+  const fontSizeValue = document.getElementById('fontSizeValue');
   const replaceCheckbox = document.getElementById('replaceWithTwitch');
   const replaceSection = document.getElementById('replaceToggleSection');
   const autoOpenCheckbox = document.getElementById('autoOpen');
   const openNowBtn = document.getElementById('openNowBtn');
   const saveNotice = document.getElementById('saveNotice');
 
-  // Default settings
+  // Default settings (size is now in pixels, defaulting to 21px which is ~16pt)
   const defaults = {
     twitchChannel: 'leopard',
     youtubeChannel: '@leopardstealth',
     displayMode: 'sidebar',
     sidebarWidth: 340,
     chatFontFamily: 'Agave',
-    chatFontSize: '16pt',
+    chatFontSize: 21,
     replaceWithTwitch: true,
     autoOpen: true
   };
@@ -42,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     chatFontInput.value = settings.chatFontFamily;
     chatFontSizeInput.value = settings.chatFontSize;
+    fontSizeValue.textContent = `${settings.chatFontSize}px`;
     
     replaceCheckbox.checked = settings.replaceWithTwitch;
     autoOpenCheckbox.checked = settings.autoOpen;
@@ -58,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
       displayMode: activeRadio ? activeRadio.value : 'sidebar',
       sidebarWidth: parseInt(widthSlider.value, 10),
       chatFontFamily: chatFontInput.value.trim() || 'Agave',
-      chatFontSize: chatFontSizeInput.value.trim() || '16pt',
+      chatFontSize: parseInt(chatFontSizeInput.value, 10) || 21,
       replaceWithTwitch: replaceCheckbox.checked,
       autoOpen: autoOpenCheckbox.checked
     };
@@ -118,7 +120,11 @@ document.addEventListener('DOMContentLoaded', () => {
   widthSlider.addEventListener('change', saveSettings);
 
   chatFontInput.addEventListener('input', saveSettings);
-  chatFontSizeInput.addEventListener('input', saveSettings);
+  
+  chatFontSizeInput.addEventListener('input', (e) => {
+    fontSizeValue.textContent = `${e.target.value}px`;
+  });
+  chatFontSizeInput.addEventListener('change', saveSettings);
   
   replaceCheckbox.addEventListener('change', saveSettings);
   autoOpenCheckbox.addEventListener('change', saveSettings);

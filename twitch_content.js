@@ -1,10 +1,10 @@
 let chatFontFamily = 'Agave';
-let chatFontSize = '16pt';
+let chatFontSize = 21; // Default to 21px (~16pt)
 
 // Initialize styles
 chrome.storage.sync.get({
   chatFontFamily: 'Agave',
-  chatFontSize: '16pt'
+  chatFontSize: 21
 }, (settings) => {
   chatFontFamily = settings.chatFontFamily;
   chatFontSize = settings.chatFontSize;
@@ -37,6 +37,12 @@ function applyChatStyles() {
     document.head.appendChild(styleEl);
   }
 
+  // Handle unit formatting (defaulting to px if a plain number is saved)
+  let formattedSize = chatFontSize;
+  if (typeof chatFontSize === 'number' || !isNaN(chatFontSize)) {
+    formattedSize = chatFontSize + 'px';
+  }
+
   styleEl.textContent = `
     @font-face {
       font-family: '${chatFontFamily}';
@@ -55,7 +61,7 @@ function applyChatStyles() {
     .chat-input__textarea *,
     .chat-line__message--emote {
       font-family: '${chatFontFamily}', monospace !important;
-      font-size: ${chatFontSize} !important;
+      font-size: ${formattedSize} !important;
     }
 
     /* Prevent emotes/images from scaling text styles */
